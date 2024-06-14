@@ -50,7 +50,7 @@ The following TechStack is required to be install on your machine.
 #### Installing
 1. Clone the repository.
 
-2. Setting up Python env in -[flask](./flask/) directory.
+2. Setting up Python env in [flask](./flask/) directory.
 ``` shell
 python -m venv venv
 
@@ -61,14 +61,14 @@ pip install -r requirements.txt
 flask run
 ```
 
-3. Setting up the React App in -[admin dashboard](./admin%20dashboard/) directory.
+3. Setting up the React App in [admin dashboard](./admin%20dashboard/) directory.
 ``` shell
 npm install 
 
 npm run dev
 ```
 
-4. Get your dataset, open jupyter using anaconda and select the -[notebook](./notebook/)
+4. Get your dataset, open jupyter using anaconda and select the [notebook](./notebook/)
 
 5. Setup Tableau Book
 ``` shell
