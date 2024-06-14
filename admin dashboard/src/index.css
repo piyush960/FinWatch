@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities{
+    .container{
+        @apply w-[1270px] mx-auto;
+    }
+}
+
+@layer components{
+    .btn{
+        @apply py-2 px-4 font-bold text-sm rounded-md;
+    }
+
+    .btn-primary{
+        @apply bg-blue-400 text-white;
+    }
+}
