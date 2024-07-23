@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 
 const Transaction = () => {
@@ -16,10 +16,27 @@ const Transaction = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [location, setlocation] = useState('India')
   const [paymentSuccess, setPaymentSuccess] = useState(false)
+  const [isAnomaly, setIsAnomaly] = useState(false);
+  const [isSnac, setIsSnac] = useState(false);
+  const [snacCountries, setSnacCountries] = useState([]);
 
+  useEffect(() => {
+    getSnacCountries()
+  }, [])
+
+  async function getSnacCountries(){
+    const response = await fetch('https://finwatch-api-ftyf.onrender.com/get-snac-countries')
+    const result = await response.json()
+    setSnacCountries(result.countries)
+  }
 
   const handleClick = async (e) => {
     e.preventDefault()
+
+    if(snacCountries.includes(location)){
+      setIsSnac(true);
+      return;
+    }
 
     const prefix = "TI";
     const randomDigits = Math.floor(Math.random() * 10000000000); // Generate random 10-digit number
@@ -66,6 +83,7 @@ const Transaction = () => {
       console.log(score);
       if(status === -1){
         // to twilio backend
+        setIsAnomaly(true);
         const response = await fetch('https://finwatch-api-ftyf.onrender.com/sendsms', { 
         method: 'POST',
         headers: {
@@ -91,7 +109,7 @@ const Transaction = () => {
     <div className='flex flex-col justify-center items-center'>
         <h2 className='text-3xl backdrop-blur-sm text-slate-600 font-bold mt-2 mb-3'>Make a Transaction</h2>
         <form className="mt-5 flex flex-col bg-blue-100 rounded shadow-md p-5 items-center">
-          {paymentSuccess ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/success.svg" alt="success" /><p className="font-bold text-green-400 text-xl">Success</p></div> : <><p className="flex gap-2 items-center mb-4"><img src="assets/icons/time.svg" alt="time"/><span className="text-gray-700 font-bold">{`${date.getHours()}:${date.getMinutes()}`}</span></p>
+          {isSnac ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/warning.svg" alt="warning" /><p className="font-bold text-yellow-300 text-xl">This Country is Snactioned</p></div> : paymentSuccess ? isAnomaly ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/warning.svg" alt="warning" /><p className="font-bold text-yellow-400 text-xl">This transaction might be Anomolous</p></div> : <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/success.svg" alt="success" /><p className="font-bold text-green-400 text-xl">Success</p></div> : <><p className="flex gap-2 items-center mb-4"><img src="assets/icons/time.svg" alt="time"/><span className="text-gray-700 font-bold">{`${date.getHours()}:${date.getMinutes()}`}</span></p>
           <div>
           <label htmlFor="" className="text-gray-700 font-semibold pb-1">Type</label><br />
           <input type="text"  className="mb-5 bg-gray-100 outline-none border-none font-semibold text-gray-600 rounded-sm px-4 py-2" value={type} onChange={(e) => settype(e.target.value)}/>
