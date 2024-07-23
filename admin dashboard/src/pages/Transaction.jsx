@@ -53,7 +53,7 @@ const Transaction = () => {
      try{
       setIsLoading(true);
       // to flask api
-      const response = await fetch('http://127.0.0.1:5000/predict', { 
+      const response = await fetch('https://finwatch-api-ftyf.onrender.com/predict', { 
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -62,14 +62,16 @@ const Transaction = () => {
       })
       const result = await response.json()
       const status = result.predictions[0];
+      const score = result.score[0];
+      console.log(score);
       if(status === -1){
         // to twilio backend
-        const response = await fetch('http://127.0.0.1:5000/sendsms', { 
+        const response = await fetch('https://finwatch-api-ftyf.onrender.com/sendsms', { 
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({phone: mobile, transactionid: transactionId})
+        body: JSON.stringify({phone: mobile, transactionid: transactionId, amount, type, country:location, iso_anomaly_score: score})
       })
       const result = await response.json()
       console.log(result);
