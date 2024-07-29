@@ -11,7 +11,6 @@ const Navbar = () => {
                     <Link to={'/'} className='text-sm text-slate-500'>Home</Link>
                     <Link to={'/admin'} className='text-sm text-slate-500'>Dashboard</Link>
                     <Link to={'/payment'} className='text-sm text-slate-500'>Transactions</Link>
-                    <Link to={'/'}  className='text-sm text-slate-500'>Logout</Link>
                 </div>
             </div>
         </div>
