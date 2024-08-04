@@ -4,6 +4,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from sqlalchemy import create_engine
+import psycopg2
 from sklearn.ensemble import IsolationForest
 from flask_cors import CORS
 from twilio.rest import Client
@@ -92,23 +93,38 @@ def predict():
     # Get input data from request
     data = request.get_json()
     input_df = pd.DataFrame([data])
-    
+    print(data)
     # Make predictions
     predictions = model.predict(input_df)
+    score = model.decision_function(input_df)
     
     # Return predictions as JSON
-    return jsonify({'predictions': predictions.tolist()})
+    return jsonify({'predictions': predictions.tolist(), 'score': score.tolist()})
 
 @app.route('/sendsms', methods=['POST'])
 def sendsms():
     account_sid = os.environ['TWILIO_SID']
     auth_token = os.environ['TWILIO_AUTH_TOKEN']
     client = Client(account_sid, auth_token)
+    username = os.getenv('AIVEN_USERNAME')
+    password = os.getenv('AIVEN_PASSWORD')
+    database = os.getenv('AIVEN_DATABASE')
+
+    conn = psycopg2.connect(
+        database=database, user=username, password=password, host='anomaly-detection-anomaly-detection.a.aivencloud.com', port= '18261'
+    )
+    conn.autocommit = True
+    cursor = conn.cursor()
 
     data = request.get_json()
+
     phone = data['phone']
     transactionid = data['transactionid']
     senderPhone = os.getenv('TWILIO_PHONE_NUMBER')
+    query = f'''INSERT INTO view_anomalies (transaction_id, type, amount, iso_anomaly_score, "Country") VALUES ('{data['transactionid']}', '{data['type'].upper()}', {data['amount']}, {data['iso_anomaly_score']}, '{data['country']}')'''
+    cursor.execute(query)
+    
+    print(query)
 
     message = client.messages \
         .create(
@@ -116,9 +132,57 @@ def sendsms():
             from_= senderPhone,
             to=phone
         )
-
+    conn.commit()
+    conn.close()
+    
     return jsonify({"success":True})
+
+@app.route('/show-anomalies', methods=['GET'])
+def getAnomalies():
+    username = os.getenv('AIVEN_USERNAME')
+    password = os.getenv('AIVEN_PASSWORD')
+    database = os.getenv('AIVEN_DATABASE')
+
+    engine = create_engine(f'postgresql://{username}:{password}@anomaly-detection-anomaly-detection.a.aivencloud.com:18261/{database}?sslmode=require')
+    query = """
+        SELECT transaction_id, type, amount, iso_anomaly_score, "Country" FROM view_anomalies ORDER BY of_date DESC LIMIT 100
+    """
+    df = pd.read_sql_query(query, engine)
+    json = df.to_dict(orient="records")
+    print(json)
+    return jsonify(json)
+
+@app.route('/get-anomalies-count', methods=['GET'])
+def getAnomaliesCount():
+    username = os.getenv('AIVEN_USERNAME')
+    password = os.getenv('AIVEN_PASSWORD')
+    database = os.getenv('AIVEN_DATABASE')
+
+    engine = create_engine(f'postgresql://{username}:{password}@anomaly-detection-anomaly-detection.a.aivencloud.com:18261/{database}?sslmode=require')
+    query = """
+        SELECT COUNT(*) FROM view_anomalies
+    """
+    df = pd.read_sql_query(query, engine)
+    json = df.to_dict(orient="records")
+    print(json)
+    return jsonify(json)
+
+@app.route('/get-snac-countries', methods=['GET'])
+def getSancCountries():
+    username = os.getenv('AIVEN_USERNAME')
+    password = os.getenv('AIVEN_PASSWORD')
+    database = os.getenv('AIVEN_DATABASE')
+
+    engine = create_engine(f'postgresql://{username}:{password}@anomaly-detection-anomaly-detection.a.aivencloud.com:18261/{database}?sslmode=require')
+    query = """
+        SELECT country_name FROM sanctioned_countries
+    """
+    df = pd.read_sql_query(query, engine)
+    restricted_countries = df['country_name'].str.strip().tolist()
+    return jsonify({"countries" : restricted_countries})
+
 
 
 if __name__ == '__main__':
+    # app.run(debug=True, host='0.0.0.0', port=10000)
     app.run(debug=True)

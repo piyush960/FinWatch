@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 
 const Transaction = () => {
@@ -16,10 +16,28 @@ const Transaction = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [location, setlocation] = useState('India')
   const [paymentSuccess, setPaymentSuccess] = useState(false)
+  const [isAnomaly, setIsAnomaly] = useState(false);
+  const [isSnac, setIsSnac] = useState(false);
+  const [snacCountries, setSnacCountries] = useState([]);
 
+  useEffect(() => {
+    getSnacCountries()
+  }, [])
+
+  async function getSnacCountries(){
+    const response = await fetch('https://finwatch-api-ftyf.onrender.com/get-snac-countries')
+    const result = await response.json()
+    setSnacCountries(result.countries.map(c => c.toLowerCase()))
+    console.log(snacCountries)
+  }
 
   const handleClick = async (e) => {
     e.preventDefault()
+    console.log(snacCountries)
+    if(snacCountries.includes(location.toLowerCase())){
+      setIsSnac(true);
+      return;
+    }
 
     const prefix = "TI";
     const randomDigits = Math.floor(Math.random() * 10000000000); // Generate random 10-digit number
@@ -53,7 +71,7 @@ const Transaction = () => {
      try{
       setIsLoading(true);
       // to flask api
-      const response = await fetch('http://127.0.0.1:5000/predict', { 
+      const response = await fetch('https://finwatch-api-ftyf.onrender.com/predict', { 
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -62,14 +80,17 @@ const Transaction = () => {
       })
       const result = await response.json()
       const status = result.predictions[0];
+      const score = result.score[0];
+      console.log(score);
       if(status === -1){
         // to twilio backend
-        const response = await fetch('http://127.0.0.1:5000/sendsms', { 
+        setIsAnomaly(true);
+        const response = await fetch('https://finwatch-api-ftyf.onrender.com/sendsms', { 
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({phone: mobile, transactionid: transactionId})
+        body: JSON.stringify({phone: mobile, transactionid: transactionId, amount, type, country:location, iso_anomaly_score: score})
       })
       const result = await response.json()
       console.log(result);
@@ -89,7 +110,7 @@ const Transaction = () => {
     <div className='flex flex-col justify-center items-center'>
         <h2 className='text-3xl backdrop-blur-sm text-slate-600 font-bold mt-2 mb-3'>Make a Transaction</h2>
         <form className="mt-5 flex flex-col bg-blue-100 rounded shadow-md p-5 items-center">
-          {paymentSuccess ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/success.svg" alt="success" /><p className="font-bold text-green-400 text-xl">Success</p></div> : <><p className="flex gap-2 items-center mb-4"><img src="assets/icons/time.svg" alt="time"/><span className="text-gray-700 font-bold">{`${date.getHours()}:${date.getMinutes()}`}</span></p>
+          {isSnac ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/warning.svg" alt="warning" /><p className="font-bold text-orange-400 text-xl">Country {location} is Snactioned</p></div> : paymentSuccess ? isAnomaly ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/warning.svg" alt="warning" /><p className="font-bold text-yellow-400 text-xl">This transaction might be Anomolous</p></div> : <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/success.svg" alt="success" /><p className="font-bold text-green-400 text-xl">Success</p></div> : <><p className="flex gap-2 items-center mb-4"><img src="assets/icons/time.svg" alt="time"/><span className="text-gray-700 font-bold">{`${date.getHours()}:${date.getMinutes()}`}</span></p>
           <div>
           <label htmlFor="" className="text-gray-700 font-semibold pb-1">Type</label><br />
           <input type="text"  className="mb-5 bg-gray-100 outline-none border-none font-semibold text-gray-600 rounded-sm px-4 py-2" value={type} onChange={(e) => settype(e.target.value)}/>

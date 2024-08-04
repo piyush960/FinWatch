@@ -76,7 +76,7 @@ In Tableau Desktop, go to the File menu.
 
 Select Open....
 
-Browse to the location of the data_analysis_tableau.twb file and select it.
+Browse to the location of the tableau_dashboard.twb file and select it.
 
 Click Open to load the workbook.
 ```
