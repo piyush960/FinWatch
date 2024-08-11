@@ -99,7 +99,7 @@ See the demo of the system running by clicking [here](https://drive.google.com/f
 
 
 ### ⛏️ Built Using <a name = "built_using"></a>
-- [PostgresSQL](https://www.mongodb.com/) - Database
+- [PostgreSQL](https://www.postgresql.org/) - Database
 - [ReactJs](https://vuejs.org/) - Web Framework
 - [NodeJs](https://nodejs.org/en/) - Server Environment
 - [Flask](https://expressjs.com/) - Server Framework
