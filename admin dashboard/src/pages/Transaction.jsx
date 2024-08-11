@@ -111,7 +111,7 @@ const Transaction = () => {
 
   return (
     <div className='flex flex-col justify-center items-center'>
-        <h2 className='text-3xl backdrop-blur-sm text-slate-600 font-bold mt-2 mb-3'>Make a Transaction</h2>
+        <h2 className='text-3xl backdrop-blur-sm text-slate-600 font-bold mt-3 mb-3'>Make a Transaction</h2>
         <form className="mt-5 flex flex-col bg-blue-100 rounded shadow-md p-5 items-center">
           {isSnac ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/warning.svg" alt="warning" /><p className="font-bold text-orange-400 text-xl">Country {location} is Snactioned</p></div> : paymentSuccess ? isAnomaly ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/warning.svg" alt="warning" /><p className="font-bold text-yellow-400 text-xl">This transaction might be Anomolous</p></div> : <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/success.svg" alt="success" /><p className="font-bold text-green-400 text-xl">Success</p></div> : <>
           <div>
