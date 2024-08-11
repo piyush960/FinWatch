@@ -57,7 +57,7 @@ const Dashboard = () => {
         </div>
         <div className='flex justify-center items-center'>
           <iframe
-            src="https://public.tableau.com/views/Code_Snap2/Final_db2?:language=en-US&:display_count=n&:origin=viz_share_link:showVizHome=no" width={1200} height={850}></iframe>
+            src="https://public.tableau.com/shared/XPT2Z9YXY?:language=en-US&:display_count=n&:origin=viz_share_link:showVizHome=no" width={1200} height={850}></iframe>
         </div>
     </div>
   )
