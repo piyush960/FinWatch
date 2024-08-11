@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import useDocumentTitle from "../hooks/useDocumentTitle"
 
 
 const Transaction = () => {
@@ -19,6 +20,8 @@ const Transaction = () => {
   const [isAnomaly, setIsAnomaly] = useState(false);
   const [isSnac, setIsSnac] = useState(false);
   const [snacCountries, setSnacCountries] = useState([]);
+
+  useDocumentTitle("Finwatch | Transaction")
 
   useEffect(() => {
     getSnacCountries()

@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react'
 import Spinner from '../components/Spinner';
 import {Link} from 'react-router-dom'
 import useWindowDimensions from '../hooks/useWindowDimension';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 const Dashboard = () => {
   const [msg, setMsg] = useState('Ship Data')
   const [anoCount, setAnoCount] = useState('n')
   const [isLoading, setIsLoading] = useState(false);
+
+  useDocumentTitle("Finwatch | Dashboard")
+  
 
   useEffect(() => {
     getAnoCount()

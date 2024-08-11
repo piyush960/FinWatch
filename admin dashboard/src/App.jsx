@@ -11,7 +11,7 @@ const App = () => {
     <div className=''>
       <Navbar />
       <Routes>
-        <Route path='/' element={<Dashboard/>}/>
+        <Route path='/' element={<Dashboard/>} />
         <Route path='/admin' element={<Dashboard/>}/>
         <Route path='/payment' element={<Transaction />}/>
         <Route path='/anomalies' element={<Anomalies />}/>

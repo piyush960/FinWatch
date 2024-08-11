@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Spinner from '../components/Spinner';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 const Anomalies = () => {
 
@@ -7,6 +8,9 @@ const Anomalies = () => {
  const [searchValue, setSearchValue] = useState("");
  const [isSorted, setisSorted] = useState(false);
  const [isLoading, setIsLoading] = useState(false);
+
+ useDocumentTitle("Finwatch | Anomalies")
+
 
  useEffect(() => {
   fetchData()
