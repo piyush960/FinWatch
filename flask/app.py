@@ -128,7 +128,7 @@ def sendsms():
 
     message = client.messages \
         .create(
-            body=f'.\n\nALERT!!!\nDear Customer,\nWe have detected ANOMALY in your latest transaction with Transaction ID {transactionid}.',
+            body=f'.\n\nALERT!!!\nDear Customer,\nWe have detected ANOMALY in your latest transaction with Transaction ID {transactionid}',
             from_= senderPhone,
             to=phone
         )
