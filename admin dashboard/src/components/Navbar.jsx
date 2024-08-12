@@ -9,7 +9,7 @@ const Navbar = () => {
                 <h1 className='text-2xl font-bold text-blue-400 backdrop-blur-sm'><Link to={'/'}>FinWatch</Link></h1>
                 <div className='flex gap-5'>
                     <Link to={'/'} className='text-sm text-slate-500'>Dashboard</Link>
-                    <Link to={'/payment'} className='text-sm text-slate-500'>Transactions</Link>
+                    <Link to={'/payment'} className='text-sm text-slate-500'>Transaction</Link>
                 </div>
             </div>
         </div>
