@@ -39,7 +39,11 @@ const Transaction = () => {
   const handleClick = async (e) => {
     e.preventDefault()
     console.log(snacCountries)
+    const response = await fetch('https://finwatch-api-ftyf.onrender.com/get-snac-countries')
+    const result = await response.json()
+    setSnacCountries(result.countries.map(c => c.toLowerCase()))
     if(snacCountries.includes(location.toLowerCase())){
+      console.log(snacCountries)
       setIsSnac(true);
       return;
     }
@@ -115,7 +119,7 @@ const Transaction = () => {
     <div className='flex flex-col justify-center items-center'>
         <h2 className='text-3xl backdrop-blur-sm text-slate-600 font-bold mt-5 mb-1'>Make a Transaction</h2>
         <form className="mt-5 bg-blue-100 p-10 rounded-lg">
-          {isSnac ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/warning.svg" alt="warning" /><p className="font-bold text-orange-400 text-xl">Country {location} is Snactioned</p></div> : paymentSuccess ? isAnomaly ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/warning.svg" alt="warning" /><p className="font-bold text-yellow-400 text-xl">This transaction might be Anomolous</p></div> : <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/success.svg" alt="success" /><p className="font-bold text-green-400 text-xl">Success</p></div> : <>
+          {isSnac ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/warning.svg" alt="warning" /><p className="font-bold text-orange-400 text-xl">Country {location} is Sanctioned</p></div> : paymentSuccess ? isAnomaly ? <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/warning.svg" alt="warning" /><p className="font-bold text-yellow-400 text-xl">This transaction might be Anomolous</p></div> : <div className="flex flex-col gap-2 items-center justify-center"><img src="assets/icons/success.svg" alt="success" /><p className="font-bold text-green-400 text-xl">Success</p></div> : <>
           
           <label htmlFor="type" className="text-gray-700 font-semibold ">Type</label>
           <select id="type" className="bg-gray-100 box-border w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-2" value={type} onChange={(e) => settype(e.target.value)}>
