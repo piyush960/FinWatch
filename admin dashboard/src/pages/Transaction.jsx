@@ -24,7 +24,7 @@ const Transaction = () => {
   useDocumentTitle("Finwatch | Transaction")
 
   useEffect(() => {
-    // getSnacCountries()
+    getSnacCountries()
   }, [])
 
   console.log(location, type, amount, mobile)
@@ -39,9 +39,6 @@ const Transaction = () => {
   const handleClick = async (e) => {
     e.preventDefault()
     console.log(snacCountries)
-    const response = await fetch('https://finwatch-api-ftyf.onrender.com/get-snac-countries')
-    const result = await response.json()
-    setSnacCountries(result.countries.map(c => c.toLowerCase()))
     if(snacCountries.includes(location.toLowerCase())){
       console.log(snacCountries)
       setIsSnac(true);
@@ -77,6 +74,7 @@ const Transaction = () => {
       "transactionBetween_Customer2Customer": Boolean(custocus)
      }
      console.log(obj)
+
      try{
       setIsLoading(true);
       // to flask api
