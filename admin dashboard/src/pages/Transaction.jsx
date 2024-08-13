@@ -24,7 +24,7 @@ const Transaction = () => {
   useDocumentTitle("Finwatch | Transaction")
 
   useEffect(() => {
-    getSnacCountries()
+    // getSnacCountries()
   }, [])
 
   console.log(location, type, amount, mobile)
